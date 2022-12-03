@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Mine{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
+{% endblock %}
+
+
+{% block body %}
+    <div class="row" style="margin-top: 20px;">
+        <div class="col"></div>
+            <div class="col-8">
+                <ul class=" nav nav-tabs mb-4 pb-2" id="ex1" role="tablist">
+                    <li class="nav-item nav-mid shade" role="presentation">
+                        <a class="nav-link " id="ex1-tab-1" data-mdb-toggle="tab" href="{{ url_for('mine.see_my_info') }}" role="tab" aria-controls="ex1-tabs-1" aria-selected="true">
+                            Personal Info
+                        </a>
+                    </li>
+                    <li class="nav-item nav-mid shade" role="presentation">
+                        <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab" href="{{ url_for('mine.see_my_collection') }}" role="tab" aria-controls="ex1-tabs-1" aria-selected="true">
+                            My favorite
+                        </a>
+                    </li>
+                    <li class="nav-item nav-mid shade" role="presentation">
+                        <a class="nav-link " id="ex1-tab-1" data-mdb-toggle="tab" href="{{ url_for('mine.see_my_question') }}" role="tab" aria-controls="ex1-tabs-1" aria-selected="true">
+                            My question
+                        </a>
+                    </li>
+                </ul>
+                {% for fav in favorite %}
+                <div class="card">
+                    <div class="card-body">
+                        <a href="{{ url_for('mine.see_my_collection_item',id=fav.id) }}">{{ fav.name }}</a>
+                        <div>{{ fav.num_content }} content</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        <div class="col"></div>
+    </div>
+
+{% endblock %}

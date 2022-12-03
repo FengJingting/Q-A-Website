@@ -1,7 +1,7 @@
 from flask import Flask,session,g
 import config
 from exts import db,mail
-from blueprints import qa_bp,user_bp
+from blueprints import qa_bp,user_bp,mine_bp
 from flask_migrate import Migrate
 from models import UserModel
 from flask_cors import CORS
@@ -19,7 +19,7 @@ migrate = Migrate(app, db)
 
 app.register_blueprint(qa_bp)
 app.register_blueprint(user_bp)
-
+app.register_blueprint(mine_bp)
 
 @app.before_request
 def before_request():

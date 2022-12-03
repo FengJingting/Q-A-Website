@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}发布问答{% endblock %}
+{% block title %}Public{% endblock %}
 
 {% block body %}
 <div class="row" style="margin-top: 20px;">
 <div class="col"></div>
 <div class="col-8">
-  <h1 style="text-align: center;">发布问答</h1>
+  <h1 style="text-align: center;">Public Question</h1>
   <form action="{{ url_for('qa.public_question') }}" method="post">
     <div class="form-group">
       <input type="text" name="title" class="form-control" placeholder="请输入标题">
@@ -22,7 +22,7 @@
     {% endfor %}
 
     <div class="form-group" style="text-align: right;">
-      <button class="btn btn-primary">发布</button>
+      <button class="btn btn-primary">Public</button>
     </div>
   </form>
 </div>

@@ -10,7 +10,7 @@ g
 from flask import session as S
 from exts import db,session
 from .forms import QuestionForm,AnswerForm
-from models import QuestionModel,AnswerModel
+from models import QuestionModel,AnswerModel,FavoriteModel
 from sqlalchemy import or_
 from decorators import login_required
 
@@ -19,7 +19,8 @@ bp = Blueprint("qa",__name__,url_prefix="/")
 @bp.route("/")
 def index():
     questions = QuestionModel.query.order_by(db.text("-create_time")).all()
-    return render_template("index.html",questions=questions)
+    favorite = FavoriteModel.query.all()
+    return render_template("index.html",questions=questions,favorite=favorite)
 
 
 @bp.route("/question/public",methods=['GET','POST'])
@@ -33,7 +34,7 @@ def public_question():
         if form.validate():
             title = form.title.data
             content = form.content.data
-            question = QuestionModel(title=title,content=content,author=g.user)
+            question = QuestionModel(title=title,content=content,author=g.user,iscollect=0)
             db.session.add(question)
             db.session.commit()
             return redirect("/")

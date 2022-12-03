@@ -1,3 +1,6 @@
+body{
+    background-color: #f3f3f3;
+}
 .question-ul li{
     padding: 10px;
     overflow: hidden;
@@ -41,4 +44,7 @@
 }
 .question-detail .question-author{
     margin-right:10px;
+}
+.collect-it{
+    display: inline-block;
 }

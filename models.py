@@ -9,6 +9,7 @@ class QuestionModel(db.Model):
     content = db.Column(db.Text,nullable=False)
     create_time = db.Column(db.DateTime,default=datetime.now)
     author_id = db.Column(db.Integer,db.ForeignKey("user.id"))
+    iscollect = db.Column(db.Integer)
     author = db.relationship("UserModel",backref="questions")
 
 
@@ -21,6 +22,23 @@ class AnswerModel(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     question = db.relationship("QuestionModel",backref=db.backref("answers",order_by=create_time.desc()))
     author = db.relationship("UserModel",backref="answers")
+
+
+tb_favorite_question = db.Table('user_favorite_question',
+                             db.Column('question_id', db.Integer, db.ForeignKey('question.id')),
+                             db.Column('favorite_id', db.Integer, db.ForeignKey('favorite.id'))
+                             )
+class FavoriteModel(db.Model):
+    __tablename__ = "favorite"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(200), nullable=False)
+    num_content = db.Column(db.Integer)
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    author = db.relationship("UserModel", backref="favorite")
+    qs = db.relationship('QuestionModel', secondary=tb_favorite_question,backref=db.backref('favorite'))
+
+
+
 
 class EmailCaptchaModel(db.Model):
     __tablename__ = "email_captcha"
