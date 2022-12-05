@@ -1,13 +1,14 @@
 from flask import Flask,session,g
 import config
 from exts import db,mail
-from blueprints import qa_bp,user_bp,mine_bp
+from blueprints import qa_bp,user_bp,mine_bp,collect_bp
 from flask_migrate import Migrate
 from models import UserModel
 from flask_cors import CORS
-
+from flask_avatars import Avatars
 
 app = Flask(__name__)
+avatars = Avatars(app) # automatically generate avatars
 app.config.from_object(config)
 db.init_app(app)
 mail.init_app(app)
@@ -20,6 +21,7 @@ migrate = Migrate(app, db)
 app.register_blueprint(qa_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(mine_bp)
+app.register_blueprint(collect_bp)
 
 @app.before_request
 def before_request():

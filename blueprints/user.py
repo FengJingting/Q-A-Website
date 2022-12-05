@@ -11,7 +11,7 @@ from flask import (
 
 from exts import mail,db
 from flask_mail import Message
-from models import EmailCaptchaModel,UserModel
+from models import EmailCaptchaModel,UserModel,FavoriteModel
 import string
 import random
 from datetime import datetime
@@ -68,6 +68,10 @@ def register():# check if the user can successfully register
             hash_password = generate_password_hash(password)
             user = UserModel(email=email, username=username, password=hash_password)
             db.session.add(user)
+            db.session.commit()
+            user_id = db.session.query(UserModel).filter(UserModel.username == username).first()
+            favorite_model = FavoriteModel(name="default", num_content=0, author_id=user_id)
+            db.session.add(favorite_model)
             db.session.commit()
             return redirect(url_for("user.login"))
         else:

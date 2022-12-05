@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Favorite{% endblock %}
+{% block title %}{{ favorites.name }}{% endblock %}
 
 {% block head %}
   <link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
@@ -10,10 +10,23 @@
 {% block body %}
     <div class="row" style="margin-top: 20px;">
         <div class="col"></div>
+            <div>{{ favorites.name }}</div>
             <div class="col-8">
-                {% for q in qs %}
-                <ul>
-                    <li>{{ q.title }}</li>
+                {% for question in qs %}
+                <ul class="question-ul">
+                    <li>
+                        <div class="side-question">
+                          <img class="side-question-avatar" src="{{ url_for('static',filename='images/avatar.jpg') }}" alt="">
+                        </div>
+                        <div class="question-main">
+                          <div class="question-title"><a href="{{ url_for('qa.question_detail',question_id=question.id) }}">{{ question.title }}</a></div>
+                          <div class="question-content">{{ question.content }}</div>
+                          <div class="question-detail">
+                            <span class="question-author">{{ question.author.username }}</span>
+                            <span class="question-time">{{ question.create_time }}</span>
+                          </div>
+                        </div>
+                    </li>
                 </ul>
                 {% endfor %}
             </div>

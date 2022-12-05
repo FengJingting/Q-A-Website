@@ -10,7 +10,7 @@ g
 from flask import session as S
 from exts import db,session
 from .forms import QuestionForm,AnswerForm
-from models import QuestionModel,AnswerModel,FavoriteModel
+from models import QuestionModel,AnswerModel,FavoriteModel,UserFavoriteQuestionModel,UserModel
 from sqlalchemy import or_
 from decorators import login_required
 
@@ -18,9 +18,13 @@ bp = Blueprint("qa",__name__,url_prefix="/")
 
 @bp.route("/")
 def index():
+    user_id = S.get("user_id")
     questions = QuestionModel.query.order_by(db.text("-create_time")).all()
-    favorite = FavoriteModel.query.all()
-    return render_template("index.html",questions=questions,favorite=favorite)
+    favorite = db.session.query(FavoriteModel).filter(FavoriteModel.author_id == user_id).all()
+    user_id = S.get("user_id")
+    result_q = QuestionModel.query.join(UserFavoriteQuestionModel).filter(UserFavoriteQuestionModel.user_id ==user_id ).all()
+    print(result_q)
+    return render_template("index.html",questions=questions,favorite=favorite,fav_q = result_q)
 
 
 @bp.route("/question/public",methods=['GET','POST'])

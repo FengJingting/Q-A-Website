@@ -4,7 +4,7 @@
 
 {% block head %}
   <link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+
 {% endblock %}
 
 {% block body %}
@@ -25,7 +25,7 @@
                <!-- Modal Body-->
               <div class="modal-body">
                     <!-- add favorite -->
-                    <form class="d-flex justify-content-center align-items-center mb-4" method="post" action="{{ url_for('mine.add') }}">
+                    <form class="d-flex justify-content-center align-items-center mb-4" id="form_{{ question.id }}" method="post" action="{{ url_for('collect.add') }}">
                                   <div class="form-outline flex-fill">
                                       <div class="input-group mb-3">
                                           <input type="text" id="form2" class="shade form-control" placeholder="favorite_name" name="favorite_name"/>
@@ -38,7 +38,7 @@
                        {% for fav in favorite %}
                         <li>
                                 <div class="card-body">{{ fav.name }}
-                                    <button id="b_{{ question.id }}_{{ fav.id }}">collect</button>
+                                    <button class="collect_item" id="b_{{ question.id }}_{{ fav.id }}">collect</button>
                                 </div>
                         </li>
                         {% endfor %}
@@ -47,15 +47,16 @@
               <!-- Modal Footer-->
               <div class="modal-footer">
                 <button type="button" id="{{ question.id }}_close" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
               </div>
             </div>
           </div>
         </div>
           <li>
+            <!--avatar-->
             <div class="side-question">
-              <img class="side-question-avatar" src="{{ url_for('static',filename='images/avatar.jpg') }}" alt="">
+              <img class="side-question-avatar" src="{{ avatars.robohash(question.author_id) }}">
             </div>
+            <!--question body-->
             <div class="question-main">
               <div class="question-title"><a href="{{ url_for('qa.question_detail',question_id=question.id) }}">{{ question.title }}</a></div>
               <div class="question-content">{{ question.content }}</div>
@@ -63,7 +64,6 @@
                   <button type="button" class="btn btn-default" id="btn_collect"  data-bs-toggle="modal" data-bs-target="#exampleModal">
                     <i class="bi bi-star"  id="btn_collect_icon_{{ question.id }}"></i>
                 </button>
-
                 <span class="question-author">{{ question.author.username }}</span>
                 <span class="question-time">{{ question.create_time }}</span>
               </div>
@@ -79,81 +79,95 @@
 <script type="text/javascript">
 
     {% for question in questions %}
-        var close =  document.getElementById("{{ question.id }}_close");
-    close.addEventListener("click", e => {
-                fetch("http://127.0.0.1:5000/mine/collect", {
-                    method: "POST",
-                    headers: {
-                      "Accept": "application/json",
-                      "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
+        {% for fav in favorite %}
+            var str = "{{fav.qs}}";
+            var patt1 = new RegExp("{{ question }}");
+            var collect_it = document.getElementById("b_{{ question.id }}_{{ fav.id }}")
+            if( patt1.test(str)){
+                $("#b_{{ question.id }}_{{ fav.id }}").css("background-color","yellow");
+                collect_it.innerHTML = "isCollect";
+            }else{
+                collect_it.innerHTML = "Collect";
+                $("#b_{{ question.id }}_{{ fav.id }}").css("background-color","white");
+            }
 
-                    })
-                  })
-                  .then(res => {
-                    if (!res.ok) {
-                      throw Error(res.status);
-                    }
-                    if(collect_it.innerHTML == "isCollect"){
+            // the collect button inside the modal
+            $("#b_{{ question.id }}_{{ fav.id }}").click(function(){
+                //请求参数
+                var data = {
+                    data: JSON.stringify({
+                        q_id:{{ question.id }},
+                        f_id:{{ fav.id }}
+                    }),
+                }
+                var collect_it = document.getElementById("b_{{ question.id }}_{{ fav.id }}")
+                if(collect_it.innerHTML == "isCollect"){
                         collect_it.innerHTML = "Collect";
+                        $("#b_{{ question.id }}_{{ fav.id }}").css("background-color","white");
                     }else{
+                        $("#b_{{ question.id }}_{{ fav.id }}").css("background-color","yellow");
                         collect_it.innerHTML = "isCollect";
                     }
-
-                  })
-                  .catch(err => console.error(err));
-              });
-        {% for fav in favorite %}
-        var collect_it = document.getElementById("b_{{ question.id }}_{{ fav.id }}")
-
-            collect_it.addEventListener("click", e => {
-                fetch("http://127.0.0.1:5000/mine/collect", {
-                    method: "POST",
-                    headers: {
-                      "Accept": "application/json",
-                      "Content-Type": "application/json"
+                $.ajax({
+                    //请求方式
+                    type : "POST",
+                    dataType: "json",
+                    //请求地址
+                    url : "http://127.0.0.1:5000/collect/collect",
+                    //数据，json字符串
+                    data : data,
+                    //请求成功
+                    success : function(result) {
+                        console.log(result);
                     },
-                    body: JSON.stringify({
-                      q_id:{{ question.id }},
-                      f_id:{{ fav.id }}
-                    })
-                  })
-                  .then(res => {
-                    if (!res.ok) {
-                      throw Error(res.status);
+                    //请求失败，包含具体的错误信息
+                    error : function(e){
+                        console.log(e.status);
+                        console.log(e.responseText);
                     }
-                    location.reload();
+                });
+            });
 
-                  })
-                  .catch(err => console.error(err));
-              });
 
+            // click collect button
+            $("#btn_collect").click(function(){
+                var classname = $("#btn_collect_icon").attr("class");
+                $("#btn_collect_icon").removeClass("bi-star-fill bi-star");
+                if(classname == "bi bi-star" ){
+                    $("#btn_collect_icon").addClass("bi bi-star-fill");
+                }else{
+                    $("#btn_collect_icon").addClass("bi bi-star");
+                }
+
+            });
         {% endfor %}
-    {% endfor %}
 
-        $("#btn_collect").click(function(){
-            var classname = $("#btn_collect_icon").attr("class");
-            $("#btn_collect_icon").removeClass("bi-star-fill bi-star");
-            if(classname == "bi bi-star" ){
-                $("#btn_collect_icon").addClass("bi bi-star-fill");
-            }else{
-                $("#btn_collect_icon").addClass("bi bi-star");
-            }
-        });
+        // close modal button
+            $("#{{ question.id }}_close").click(function(){
+                $.get('http://127.0.0.1:5000/', function(res) {
+                    location.reload();
+                    console.log(res);
+                })
+            });
 
-        {% for question in questions %}
+        // collect button
             var collect = document.getElementById("btn_collect_icon")
             $("#btn_collect_icon_{{ question.id }}").removeClass("bi-star-fill bi-star");
-            console.log({{ question.iscollect }})
-            var iscollect = {{ question.iscollect }};
-            if(iscollect>0){
-
+            {#var iscollect = {{ question.iscollect }};#}
+            var str = "{{fav_q}}";
+            var patt1 = new RegExp("{{ question }}");
+            if(patt1.test(str)){
                 $("#btn_collect_icon_{{ question.id }}").addClass("bi bi-star-fill");
             }else{
                 $("#btn_collect_icon_{{ question.id }}").addClass("bi bi-star");
             }
+    {% endfor %}
 
-        {% endfor %}
+
+
+
+
+
+
     </script>
 {% endblock %}

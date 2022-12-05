@@ -48,3 +48,6 @@ body{
 .collect-it{
     display: inline-block;
 }
+.collect_item{
+    float: right;
+}
