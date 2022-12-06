@@ -6,9 +6,9 @@ from flask import (
     url_for,
     jsonify,
     session,
-    flash
+    flash,
 )
-
+from flask import current_app as app
 from exts import mail,db
 from flask_mail import Message
 from models import EmailCaptchaModel,UserModel,FavoriteModel
@@ -33,9 +33,11 @@ def login(): # check if the user can log in
             user = UserModel.query.filter_by(email=email).first()
             if user and check_password_hash(user.password,password):
                 session['user_id'] = user.id
+                app.logger.info('%s logged in successfully', user.username)
                 return redirect("/")
             else:
                 flash("Your email and Password doesn't match!")
+                app.logger.info('%s failed to log in because of wrong password or email', user.username)
                 return redirect(url_for("user.login"))
         else:
             flash("Invalid format of email or Password")

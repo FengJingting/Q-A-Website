@@ -7,6 +7,7 @@ from models import UserModel
 from flask_cors import CORS
 from flask_avatars import Avatars
 
+
 app = Flask(__name__)
 avatars = Avatars(app) # automatically generate avatars
 app.config.from_object(config)
@@ -43,7 +44,6 @@ def context_processor():
         return {"user": g.user}
     else:
         return {}
-
 
 if __name__ == '__main__':
     app.run()

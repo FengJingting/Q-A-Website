@@ -38,7 +38,7 @@ def public_question():
         if form.validate():
             title = form.title.data
             content = form.content.data
-            question = QuestionModel(title=title,content=content,author=g.user,iscollect=0)
+            question = QuestionModel(title=title,content=content,author=g.user)
             db.session.add(question)
             db.session.commit()
             return redirect("/")
