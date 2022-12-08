@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 
 {% block title %}Index{% endblock %}
-
+<script src="{{ url_for('static',filename='jquery/jquery.3.6.min.js') }}"></script>
 {% block head %}
-  <link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
 
 {% endblock %}
 
@@ -75,8 +74,9 @@
     <div class="col"></div>
   </div>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script type="text/javascript">
+{#<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>#}
+
+    <script type="text/javascript">
 
     {% for question in questions %}
         {% for fav in favorite %}

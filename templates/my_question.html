@@ -8,6 +8,8 @@
 
 
 {% block body %}
+
+    <!--my question-->
     <div class="row" style="margin-top: 20px;">
         <div class="col"></div>
             <div class="col-8">
@@ -36,9 +38,9 @@
                           <div class="question-title"><a href="{{ url_for('qa.question_detail',question_id=question.id) }}">{{ question.title }}</a></div>
                           <div class="question-content">{{ question.content }}</div>
                           <div class="question-detail">
-                              <button type="button" class="btn btn-default" >
-                                <i class="bi bi-trash3-fill"  id="btn_delete_icon_{{ question.id }}"></i>
-                            </button>
+                                <a href="{{ url_for('mine.delete_q',id=question.id) }}">
+                                    <i class="bi bi-trash3-fill delete_fav" ></i>
+                                </a>
                             <span class="question-time">{{ question.create_time }}</span>
                           </div>
                         </div>
@@ -49,35 +51,6 @@
         <div class="col"></div>
     </div>
 <script>
-    {% for question in questions %}
-        $("#btn_delete_icon_{{ question.id }}").click(function(){
-                //请求参数
-                var data = {
-                    data: JSON.stringify({
-                        q_id:{{ question.id }},
-                    }),
-                }
 
-                $.ajax({
-                    //请求方式
-                    type : "POST",
-                    dataType: "json",
-                    //请求地址
-                    url : "http://127.0.0.1:5000/mine/mine/delete_q",
-                    //数据，json字符串
-                    data : data,
-                    //请求成功
-                    success : function(result) {
-                        location.reload();
-                        console.log(result);
-                    },
-                    //请求失败，包含具体的错误信息
-                    error : function(e){
-                        console.log(e.status);
-                        console.log(e.responseText);
-                    }
-                });
-            });
-    {% endfor %}
 </script>
 {% endblock %}

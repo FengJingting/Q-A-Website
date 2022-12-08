@@ -1,4 +1,4 @@
-from flask import Flask,session,g
+from flask import Flask,session,g,request
 import config
 from exts import db,mail
 from blueprints import qa_bp,user_bp,mine_bp,collect_bp
@@ -6,7 +6,7 @@ from flask_migrate import Migrate
 from models import UserModel
 from flask_cors import CORS
 from flask_avatars import Avatars
-
+from logger import logger1
 
 app = Flask(__name__)
 avatars = Avatars(app) # automatically generate avatars
@@ -44,6 +44,7 @@ def context_processor():
         return {"user": g.user}
     else:
         return {}
+
 
 if __name__ == '__main__':
     app.run()

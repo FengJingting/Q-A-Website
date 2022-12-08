@@ -9,10 +9,22 @@
   <h1 style="text-align: center;">Public Question</h1>
   <form action="{{ url_for('qa.public_question') }}" method="post">
     <div class="form-group">
-      <input type="text" name="title" class="form-control" placeholder="请输入标题">
+      <input type="text" name="title" class="form-control" placeholder="Enter Title">
     </div>
     <div class="form-group">
-      <textarea name="content" class="form-control" rows="10" placeholder="请输入内容"></textarea>
+      <textarea name="content" class="form-control" rows="10" placeholder="Enter Content"></textarea>
+    </div>
+    <div class="form-group getgeo">
+        <div class="input-group mb-3">
+            <input type="text" id="form2" class="shade form-control" placeholder="city location" name="city"/>
+            <button id="get_city" type="button">get city</button>
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" id="form2" class="shade form-control" placeholder="geolocation" name="geolocation"/>
+            <button id="get_geo" type="button">get geolocation</button>
+        </div>
+
+
     </div>
 
     {% for message in get_flashed_messages() %}
@@ -22,10 +34,67 @@
     {% endfor %}
 
     <div class="form-group" style="text-align: right;">
-      <button class="btn btn-primary">Public</button>
+      <button id="get_geo" class="btn btn-primary" type="submit">Public</button>
     </div>
   </form>
+
 </div>
 <div class="col"></div>
 </div>
+    <script src="http://api.map.baidu.com/api?v=2.0&ak=pjlrsQkd7x8lLGyMoNejORVf4tU1Ez9N"></script>
+    <script>
+    var city = "";
+    var latitude = 0;
+    var longitude = 0;
+
+    // get city and province name
+     $("#get_city").click(function(){
+        var geolocation=new BMap.Geolocation();
+            geolocation.getCurrentPosition(function(r){
+                if(this.getStatus()==BMAP_STATUS_SUCCESS){
+                    var province=r.address.province //返回当前省份
+                    var city=r.address.city//返回当前城市
+                    console.log(city)
+                    $('.cityName').text(city)
+                }
+            })
+        var data = {
+                    data: JSON.stringify({
+                        province:province,
+                        city:city
+                    }),
+                }
+
+    // get geo
+    $("#get_geo").click(function(){
+      if(navigator.geolocation){
+        console.log("支持定位");
+        navigator.geolocation.getCurrentPosition((function(position){
+            latitude = position.coords.altitude;
+            longitude = position.coords.longitude;
+        }));
+      }else{
+        console.log("不支持地理定位");
+      }
+    });
+    $.ajax({
+                    //请求方式
+                    type : "POST",
+                    dataType: "json",
+                    //请求地址
+                    url : "http://127.0.0.1:5000/q_a/get_city",
+                    //数据，json字符串
+                    data : data,
+                    //请求成功
+                    success : function(result) {
+                        console.log(result);
+                    },
+                    //请求失败，包含具体的错误信息
+                    error : function(e){
+                        console.log(e.status);
+                        console.log(e.responseText);
+                    }
+                });
+    });
+    </script>
 {% endblock %}

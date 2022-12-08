@@ -7,6 +7,7 @@ from flask import (
     jsonify,
     session,
     flash,
+    Response
 )
 from flask import current_app as app
 from exts import mail,db
@@ -17,6 +18,7 @@ import random
 from datetime import datetime
 from .forms import RegisterForm,LoginForm
 from werkzeug.security import generate_password_hash,check_password_hash
+from logger import logger1
 
 bp = Blueprint("user",__name__,url_prefix="/user")
 
@@ -32,12 +34,22 @@ def login(): # check if the user can log in
             password = form.password.data
             user = UserModel.query.filter_by(email=email).first()
             if user and check_password_hash(user.password,password):
+                response = Response("cookie")
+                response.set_cookie("user_id", str(user.id))
+                print(response)
+                flash("Warning: Cookie will be used in this website!")
                 session['user_id'] = user.id
-                app.logger.info('%s logged in successfully', user.username)
+
+                info = user.username+"logged in successfully"
+                logger1.error(msg=info)
+                logger1.log(msg=info,level=10)
                 return redirect("/")
             else:
                 flash("Your email and Password doesn't match!")
-                app.logger.info('%s failed to log in because of wrong password or email', user.username)
+                if user !=None:
+                    logger1.info('%s failed to log in because of wrong password or email', user.username)
+                else:
+                    logger1.info('login without register')
                 return redirect(url_for("user.login"))
         else:
             flash("Invalid format of email or Password")
@@ -71,8 +83,8 @@ def register():# check if the user can successfully register
             user = UserModel(email=email, username=username, password=hash_password)
             db.session.add(user)
             db.session.commit()
-            user_id = db.session.query(UserModel).filter(UserModel.username == username).first()
-            favorite_model = FavoriteModel(name="default", num_content=0, author_id=user_id)
+            user= db.session.query(UserModel).filter(UserModel.username == username).first()
+            favorite_model = FavoriteModel(name="default", num_content=0, author_id=user.id)
             db.session.add(favorite_model)
             db.session.commit()
             return redirect(url_for("user.login"))

@@ -39,7 +39,7 @@ def add(): # add assessment
     db.session.commit()
     questions = QuestionModel.query.order_by(db.text("-create_time")).all()
     favorite = db.session.query(FavoriteModel).filter(FavoriteModel.author_id == user_id).all()
-    return render_template("index.html", questions=questions, favorite=favorite)
+    return redirect("/")
 
 @bp.route("/collect/", methods=["POST","GET"])
 @login_required

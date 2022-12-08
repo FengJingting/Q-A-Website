@@ -5,8 +5,9 @@ from flask import (
     redirect,
     flash,
     url_for,
-g
+    g
 )
+from flask import current_app as app
 from flask import session as S
 from exts import db,session
 from .forms import QuestionForm,AnswerForm
@@ -30,6 +31,8 @@ def index():
 @bp.route("/question/public",methods=['GET','POST'])
 @login_required
 def public_question():
+    # user_id_1 = request.cookie.get("user_id")
+    # app.logger.info('user id is %s', user_id_1)
     # 判断是否登录，如果没有登录，跳转到登录页面
     if request.method == 'GET':
         return render_template("public_question.html")
@@ -64,15 +67,13 @@ def answer(question_id):
         db.session.commit()
         return redirect(url_for("qa.question_detail",question_id=question_id))
     else:
-        flash("表单验证失败！")
+        flash("Wrong format！")
         return redirect(url_for("qa.question_detail", question_id=question_id))
 
 
 @bp.route("/search")
 def search():
-    # /search?q=xxx
     q = request.args.get("q")
-    # filter_by：直接使用字段的名称
-    # filter：使用模型.字段名称
     questions =QuestionModel.query.filter(or_(QuestionModel.title.contains(q),QuestionModel.content.contains(q))).order_by(db.text("-create_time"))
+    print(questions)
     return render_template("index.html",questions=questions)
