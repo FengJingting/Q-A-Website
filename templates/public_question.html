@@ -16,15 +16,13 @@
     </div>
     <div class="form-group getgeo">
         <div class="input-group mb-3">
-            <input type="text" id="form2" class="shade form-control" placeholder="city location" name="city"/>
+            <input type="text" id="form1" class="shade form-control" placeholder="city location" name="city"/>
             <button id="get_city" type="button">get city</button>
         </div>
         <div class="input-group mb-3">
             <input type="text" id="form2" class="shade form-control" placeholder="geolocation" name="geolocation"/>
             <button id="get_geo" type="button">get geolocation</button>
         </div>
-
-
     </div>
 
     {% for message in get_flashed_messages() %}
@@ -44,57 +42,57 @@
     <script src="http://api.map.baidu.com/api?v=2.0&ak=pjlrsQkd7x8lLGyMoNejORVf4tU1Ez9N"></script>
     <script>
     var city = "";
-    var latitude = 0;
-    var longitude = 0;
+    var province = "";
+    var latitude = "";
+    var longitude = "";
 
     // get city and province name
-     $("#get_city").click(function(){
-        var geolocation=new BMap.Geolocation();
-            geolocation.getCurrentPosition(function(r){
-                if(this.getStatus()==BMAP_STATUS_SUCCESS){
-                    var province=r.address.province //返回当前省份
-                    var city=r.address.city//返回当前城市
-                    console.log(city)
-                    $('.cityName').text(city)
+     $("#get_city").click(function() {
+         var form1 = document.getElementById("form1");
+         if(localStorage.getItem ("city") ){
+             form1.value = localStorage.getItem ("city");
+             console.log("in local storage");
+         }else{
+             var geolocation = new BMap.Geolocation();
+             geolocation.getCurrentPosition(function (r) {
+             if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+                 var province = r.address.province //返回当前省份
+                 var city = r.address.city//返回当前城市
+                 form1.value = province+city;
+                 localStorage.setItem ("city",province+city);
+                 $('.cityName').text(city)
                 }
             })
-        var data = {
-                    data: JSON.stringify({
-                        province:province,
-                        city:city
-                    }),
-                }
+        }
 
-    // get geo
-    $("#get_geo").click(function(){
-      if(navigator.geolocation){
-        console.log("支持定位");
-        navigator.geolocation.getCurrentPosition((function(position){
-            latitude = position.coords.altitude;
-            longitude = position.coords.longitude;
-        }));
-      }else{
-        console.log("不支持地理定位");
-      }
-    });
-    $.ajax({
-                    //请求方式
-                    type : "POST",
-                    dataType: "json",
-                    //请求地址
-                    url : "http://127.0.0.1:5000/q_a/get_city",
-                    //数据，json字符串
-                    data : data,
-                    //请求成功
-                    success : function(result) {
-                        console.log(result);
-                    },
-                    //请求失败，包含具体的错误信息
-                    error : function(e){
-                        console.log(e.status);
-                        console.log(e.responseText);
-                    }
-                });
-    });
+     })
+
+     // get geo
+     $("#get_geo").click(function () {
+         var form2 = document.getElementById("form2");
+
+         if(localStorage.getItem ("geo") ){
+             form2.value = localStorage.getItem ("geo");
+             console.log("in local storage");
+         }else{
+             var geolocation = new BMap.Geolocation();
+             geolocation.getCurrentPosition(function (r) {
+             if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+                 if (navigator.geolocation) {
+                 navigator.geolocation.getCurrentPosition((function (position) {
+                     latitude = position.coords.latitude;
+                     longitude = position.coords.longitude;
+                     value = latitude.toString().slice(0, 5)+"°,"+longitude.toString().slice(0, 5)+"°";
+                     form2.value = value;
+                     localStorage.setItem ("geo",value);
+                 }))
+                 } else {
+                     alert("The browser doesn't allow to get geo-location!");
+                 }
+             }
+            })
+        }
+     });
+
     </script>
 {% endblock %}

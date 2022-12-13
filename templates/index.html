@@ -13,7 +13,7 @@
       <ul class="question-ul">
         {% for question in questions %}
         <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="exampleModal_{{ question.id }}" tabindex="-1" aria-labelledby="exampleModalLabel_{{ question.id }}" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <!-- Modal Header-->
@@ -59,12 +59,21 @@
             <div class="question-main">
               <div class="question-title"><a href="{{ url_for('qa.question_detail',question_id=question.id) }}">{{ question.title }}</a></div>
               <div class="question-content">{{ question.content }}</div>
-              <div class="question-detail">
-                  <button type="button" class="btn btn-default" id="btn_collect"  data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    <i class="bi bi-star"  id="btn_collect_icon_{{ question.id }}"></i>
-                </button>
-                <span class="question-author">{{ question.author.username }}</span>
-                <span class="question-time">{{ question.create_time }}</span>
+
+              <div  class="question-detail">
+                  <div class="detail-info">
+                      <button type="button" class="btn btn-default" id="btn_collect"  data-bs-toggle="modal" data-bs-target="#exampleModal_{{ question.id }}">
+                        <i class="bi bi-star"  id="btn_collect_icon_{{ question.id }}"></i>
+                      </button>
+                      <span class="question-author">{{ question.author.username }}</span>
+                      <span class="question-time">{{ question.create_time }}</span>
+                  </div>
+
+                  <div class="geo">
+                    <i class="bi bi-geo-alt"></i>
+                    <span class="question-geo">{{ question.city }}</span>
+                    <span class="question-geo">{{ question.geolocation }}</span>
+                  </div>
               </div>
             </div>
           </li>
@@ -83,12 +92,18 @@
             var str = "{{fav.qs}}";
             var patt1 = new RegExp("{{ question }}");
             var collect_it = document.getElementById("b_{{ question.id }}_{{ fav.id }}")
+            {#console.log("#b_{{ question.id }}_{{ fav.id }}")#}
+            {#console.log(str,patt1)#}
             if( patt1.test(str)){
+                 {#console.log("has",str,patt1,patt1.test(str))#}
                 $("#b_{{ question.id }}_{{ fav.id }}").css("background-color","yellow");
+                 {#console.log("#b_{{ question.id }}_{{ fav.id }}")#}
                 collect_it.innerHTML = "isCollect";
             }else{
+                {#console.log("does not has",str,patt1,patt1.test(str))#}
                 collect_it.innerHTML = "Collect";
                 $("#b_{{ question.id }}_{{ fav.id }}").css("background-color","white");
+                {#console.log("#b_{{ question.id }}_{{ fav.id }}")#}
             }
 
             // the collect button inside the modal

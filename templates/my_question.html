@@ -33,6 +33,55 @@
 
                 <ul class="question-ul">
                 {% for question in questions %}
+                    <!-- Edit question Modal-->
+                    <div class="modal fade" id="exampleModal_{{ question.id }}" tabindex="-1" aria-labelledby="exampleModalLabel_{{ question.id }}" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <!-- Modal Header-->
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Question</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                           <!-- Modal Body-->
+                          <div class="modal-body">
+                                <!-- edit -->
+                              <form action="{{ url_for('mine.edit_q',id=question.id) }}" method="post">
+                                <div class="form-group">
+                                  <input type="text" name="title" class="form-control" placeholder="Enter Title">
+                                </div>
+                                <div class="form-group">
+                                  <textarea name="content" class="form-control" rows="10" placeholder="Enter Content"></textarea>
+                                </div>
+                                <div class="form-group getgeo">
+                                    <div class="input-group mb-3">
+                                        <input type="text" id="form1" class="shade form-control" placeholder="city location" name="city"/>
+                                        <button id="get_city" type="button">get city</button>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <input type="text" id="form2" class="shade form-control" placeholder="geolocation" name="geolocation"/>
+                                        <button id="get_geo" type="button">get geolocation</button>
+                                    </div>
+                                </div>
+
+                                {% for message in get_flashed_messages() %}
+                                  <div class="form-group">
+                                    <div class="text-danger">{{ message }}</div>
+                                  </div>
+                                {% endfor %}
+
+                                <div class="form-group" style="text-align: right;">
+                                  <button id="get_geo" class="btn btn-primary" type="submit">Public</button>
+                                </div>
+                              </form>
+
+                          </div>
+                          <!-- Modal Footer-->
+                          <div class="modal-footer">
+                            <button type="button" id="{{ question.id }}_close" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <li>
                         <div class="question-main">
                           <div class="question-title"><a href="{{ url_for('qa.question_detail',question_id=question.id) }}">{{ question.title }}</a></div>
@@ -40,6 +89,9 @@
                           <div class="question-detail">
                                 <a href="{{ url_for('mine.delete_q',id=question.id) }}">
                                     <i class="bi bi-trash3-fill delete_fav" ></i>
+                                </a>
+                                <a data-bs-toggle="modal" data-bs-target="#exampleModal_{{ question.id }}">
+                                    <i class="bi bi-pencil-fill delete_fav"></i>
                                 </a>
                             <span class="question-time">{{ question.create_time }}</span>
                           </div>

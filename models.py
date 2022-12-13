@@ -8,7 +8,7 @@ class QuestionModel(db.Model):
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text,nullable=False)
     city = db.Column(db.String(100))
-    geoloaction = db.Column(db.String(100))
+    geolocation = db.Column(db.String(100))
     create_time = db.Column(db.DateTime,default=datetime.now)
     author_id = db.Column(db.Integer,db.ForeignKey("user.id"))
     author = db.relationship("UserModel",backref="questions")

@@ -39,17 +39,23 @@ def login(): # check if the user can log in
                 print(response)
                 flash("Warning: Cookie will be used in this website!")
                 session['user_id'] = user.id
-
-                info = user.username+"logged in successfully"
-                logger1.error(msg=info)
-                logger1.log(msg=info,level=10)
+                # if admin log in
+                if user.id == 9:
+                    ip = request.remote_addr
+                    info = "Administrator logged in successfully in ip" + ip
+                    logger1.log(msg=info, level=30)
+                    return redirect("/admin")
+                ip = request.remote_addr
+                info = "user id" + str(user.id)+" logged in successfully in ip"+ip
+                logger1.log(msg=info,level=20)
                 return redirect("/")
             else:
                 flash("Your email and Password doesn't match!")
                 if user !=None:
-                    logger1.info('%s failed to log in because of wrong password or email', user.username)
+                    info = user.username + " failed to log in because of wrong password or email"
+                    logger1.log(msg=info, level=20)
                 else:
-                    logger1.info('login without register')
+                    logger1.log(msg="some one login without register ", level=20)
                 return redirect(url_for("user.login"))
         else:
             flash("Invalid format of email or Password")
@@ -84,6 +90,8 @@ def register():# check if the user can successfully register
             db.session.add(user)
             db.session.commit()
             user= db.session.query(UserModel).filter(UserModel.username == username).first()
+            info = "user id" + str(user.id) + " registered successfully"
+            logger1.log(msg=info, level=20)
             favorite_model = FavoriteModel(name="default", num_content=0, author_id=user.id)
             db.session.add(favorite_model)
             db.session.commit()
@@ -93,8 +101,12 @@ def register():# check if the user can successfully register
 
 @bp.route("/logout")
 def logout():
+    user_id = session.get("user_id")
+    info = "user id" + str(user_id) + " logged out"
+    logger1.log(msg=info, level=20)
     # clear data in session
     session.clear()
+
     return redirect(url_for('user.login'))
 
 @bp.route("/captcha",methods=['POST'])

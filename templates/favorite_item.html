@@ -10,13 +10,14 @@
 {% block body %}
     <div class="row" style="margin-top: 20px;">
         <div class="col"></div>
-            <div>{{ favorites.name }}</div>
+
             <div class="col-8">
+                <div class="item-title">Favorite: {{ favorites.name }}</div>
                 {% for question in qs %}
                 <ul class="question-ul">
                     <li>
                         <div class="side-question">
-                          <img class="side-question-avatar" src="{{ url_for('static',filename='images/avatar.jpg') }}" alt="">
+                          <img class="side-question-avatar" src="{{ avatars.robohash(question.author_id) }}">
                         </div>
                         <div class="question-main">
                           <div class="question-title"><a href="{{ url_for('qa.question_detail',question_id=question.id) }}">{{ question.title }}</a></div>

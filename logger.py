@@ -6,7 +6,7 @@ fmt = logging.Formatter(fmt="%(asctime)s - %(name)s - %(levelname)s -%(module)s:
 file.setFormatter(fmt)
 
 # 定义日志
-logger1 = logging.Logger(name='This is operation log', level=logging.ERROR)
+logger1 = logging.Logger(name='operation log')
 logger1.addHandler(file)
 # logger1.removeHandler(file)
 

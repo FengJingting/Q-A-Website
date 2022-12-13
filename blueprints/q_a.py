@@ -14,26 +14,27 @@ from .forms import QuestionForm,AnswerForm
 from models import QuestionModel,AnswerModel,FavoriteModel,UserFavoriteQuestionModel,UserModel
 from sqlalchemy import or_
 from decorators import login_required
+from logger import logger1
 
 bp = Blueprint("qa",__name__,url_prefix="/")
 
 @bp.route("/")
 def index():
+    ifdamin = 0
     user_id = S.get("user_id")
+    if user_id == 9:
+        ifdamin = 1
     questions = QuestionModel.query.order_by(db.text("-create_time")).all()
     favorite = db.session.query(FavoriteModel).filter(FavoriteModel.author_id == user_id).all()
     user_id = S.get("user_id")
     result_q = QuestionModel.query.join(UserFavoriteQuestionModel).filter(UserFavoriteQuestionModel.user_id ==user_id ).all()
-    print(result_q)
-    return render_template("index.html",questions=questions,favorite=favorite,fav_q = result_q)
+    return render_template("index.html",questions=questions,favorite=favorite,fav_q = result_q,ifdamin = ifdamin)
 
 
 @bp.route("/question/public",methods=['GET','POST'])
 @login_required
 def public_question():
-    # user_id_1 = request.cookie.get("user_id")
-    # app.logger.info('user id is %s', user_id_1)
-    # 判断是否登录，如果没有登录，跳转到登录页面
+    user_id = S.get("user_id")
     if request.method == 'GET':
         return render_template("public_question.html")
     else:
@@ -41,12 +42,20 @@ def public_question():
         if form.validate():
             title = form.title.data
             content = form.content.data
-            question = QuestionModel(title=title,content=content,author=g.user)
+            city = request.form.get("city")
+            geo = request.form.get("geolocation")
+            if city == "":
+                city = "Secret"
+            if geo == "":
+                geo = "Secret"
+            question = QuestionModel(title=title,content=content,author=g.user,city=city,geolocation=geo)
             db.session.add(question)
             db.session.commit()
+            info = "user id" + str(user_id) + " public question" + title
+            logger1.log(msg=info, level=20)
             return redirect("/")
         else:
-            flash("标题或内容格式错误！")
+            flash("Wrong format！")
             return redirect(url_for("qa.public_question"))
 
 
@@ -59,12 +68,15 @@ def question_detail(question_id):
 @bp.route("/answer/<int:question_id>",methods=['POST'])
 @login_required
 def answer(question_id):
+    user_id = S.get("user_id")
     form = AnswerForm(request.form)
     if form.validate():
         content = form.content.data
         answer_model = AnswerModel(content=content,author=g.user,question_id=question_id)
         db.session.add(answer_model)
         db.session.commit()
+        info = "user id" + str(user_id) + " give an answer to question "+ question_id
+        logger1.log(msg=info, level=20)
         return redirect(url_for("qa.question_detail",question_id=question_id))
     else:
         flash("Wrong format！")
@@ -73,7 +85,13 @@ def answer(question_id):
 
 @bp.route("/search")
 def search():
+    user_id = S.get("user_id")
     q = request.args.get("q")
+    print(q)
     questions =QuestionModel.query.filter(or_(QuestionModel.title.contains(q),QuestionModel.content.contains(q))).order_by(db.text("-create_time"))
     print(questions)
-    return render_template("index.html",questions=questions)
+    favorite = db.session.query(FavoriteModel).filter(FavoriteModel.author_id == user_id).all()
+    user_id = S.get("user_id")
+    result_q = QuestionModel.query.join(UserFavoriteQuestionModel).filter(
+        UserFavoriteQuestionModel.user_id == user_id).all()
+    return render_template("index.html",questions=questions,favorite=favorite,fav_q = result_q)
