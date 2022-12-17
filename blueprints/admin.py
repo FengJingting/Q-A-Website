@@ -26,6 +26,7 @@ def index():
 @bp.route("/delete/<int:id>",methods=["GET","POST"])
 @login_required
 def delete(id):
+    ip = request.remote_addr
     try:
         u_id = id
         db.session.query(UserFavoriteQuestionModel).filter(UserFavoriteQuestionModel.user_id == u_id).delete()
@@ -38,7 +39,11 @@ def delete(id):
         db.session.commit()
         db.session.query(UserModel).filter(UserModel.id == u_id).delete()
         db.session.commit()
+        info = "administrator delete user id " + str(u_id) + " successfully in ip"+ ip
+        logger1.log(msg=info, level=20)
     except Exception as e:
+        info = "administrator fail to delete user id" + str(u_id) +" with exception" + e + "in ip" + ip
+        logger1.log(msg=info, level=40)
         logger1.error(msg=e)
         db.session.rollback()
 

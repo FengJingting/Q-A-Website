@@ -95,6 +95,7 @@ def register():# check if the user can successfully register
             favorite_model = FavoriteModel(name="default", num_content=0, author_id=user.id)
             db.session.add(favorite_model)
             db.session.commit()
+            flash("successfully registered!")
             return redirect(url_for("user.login"))
         else:
             return redirect(url_for("user.register"))

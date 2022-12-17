@@ -61,9 +61,24 @@ def public_question():
 
 @bp.route("/question/<int:question_id>")
 def question_detail(question_id):
+    user_id = S.get("user_id")
     question = QuestionModel.query.get(question_id)
-    return render_template("detail.html", question=question)
+    return render_template("detail.html", question=question,user=user_id)
 
+@bp.route("/delete_a/<int:id>")
+def delete_a(id):
+    user_id = S.get("user_id")
+    try:
+        db.session.query(AnswerModel).filter(AnswerModel.id == id).delete()
+        db.session.commit()
+        info = "user id" + str(user_id) + " delete answer id" + str(id)
+        logger1.log(msg=info, level=20)
+    except Exception as e:
+        info = "user id" + str(user_id) + " fail to delete answer id" + str(id) + "with expection" + e
+        logger1.error(msg=info, level=40)
+        db.session.rollback()
+
+    return redirect("/")
 
 @bp.route("/answer/<int:question_id>",methods=['POST'])
 @login_required
@@ -75,7 +90,7 @@ def answer(question_id):
         answer_model = AnswerModel(content=content,author=g.user,question_id=question_id)
         db.session.add(answer_model)
         db.session.commit()
-        info = "user id" + str(user_id) + " give an answer to question "+ question_id
+        info = "user id" + str(user_id) + " give an answer to question "+ str(question_id)
         logger1.log(msg=info, level=20)
         return redirect(url_for("qa.question_detail",question_id=question_id))
     else:

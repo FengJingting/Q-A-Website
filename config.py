@@ -16,9 +16,9 @@ MAIL_PORT = 465
 MAIL_USE_TLS = False
 MAIL_USE_SSL = True
 MAIL_DEBUG = True
-MAIL_USERNAME = "386018442@qq.com"
-MAIL_PASSWORD = "zjkrfexeplecbggi"
-MAIL_DEFAULT_SENDER = "386018442@qq.com"
+MAIL_USERNAME = "2283408566@qq.com"
+MAIL_PASSWORD = "mqnimmilbajididd"
+MAIL_DEFAULT_SENDER = "2283408566@qq.com"
 
 # config of log
 from logging.config import dictConfig

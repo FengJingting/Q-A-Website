@@ -1,12 +1,39 @@
 body{
-    background-color: #d4d8e0;
+	margin:0 auto;
+	overflow:hidden;
+}
+.row1{
+    margin-top: 20px;
+}
+/* Canvas*/
+.canvaszz{
+	position:absolute;
+	background-size: 100%;
+	width:100%;
+	height:100%;
+	z-index:-1;
+	filter:alpha(opacity=20);
+	opacity: 0.4;
+}
+.canvas {
+	position:absolute;
+	display:inline-block;
+	width:100%;
+	height:auto;
+	vertical-align:baseline;
+	z-index:-2;
 }
 
+/*nav bar*/
+.nav-item{
+    color: #eeeeee;
+}
 a {
 	text-decoration: none;
 	outline: none;
-	color: #000;
 }
+
+
 li{
     list-style:none;
 }
@@ -19,6 +46,7 @@ li{
     border-bottom:1px solid #eee;
     margin-top: 15px;
     border-radius: 10px;
+    opacity: 0.9;
 }
 .side-question{
     flex-basis: 38px;
@@ -53,9 +81,15 @@ li{
     margin-top: 5px;
     font-size:15px;
 }
+show{
+    margin-top: 5px;
+    font-size:15px;
+}
 .question-time{
      font-size:14px;
 }
+
+/* question detail */
 .question-detail{
     text-align: right;
     margin-top: 10px;
@@ -79,6 +113,7 @@ li{
     margin-top: 10px;
 }
 
+/*delete btn*/
 .delete_fav{
     float: right;
     margin-left: 10px;
@@ -100,31 +135,46 @@ li{
 #ex1-tab-1.active{
     color: black;
 }
+
 .avatar{
     display: block;
     background-color: #fff;
     border-radius: 50%;
-    margin: 0 auto;
-
+    margin: 10px auto;
 }
 
 .person-info .title{
     font-size: 18px;
 }
-
+.modify-btn{
+    border:0px;
+    background-color: #fff;
+    display: inline-block;
+    float: right;
+}
+.delete-q{
+    color: black;
+}
+/* public */
+.public-title{
+    color: #eeeeee;
+    text-align: center;
+}
+.public-content{
+    margin-top:10px;
+}
 .info-btn{
     float: right;
 }
-
 .getgeo{
     margin-top: 10px;;
 }
-
 .geo{
     font-size: 13px;
     float: left;
 }
 
+/* detail */
 .detail-info{
     float: right;
 }
@@ -134,4 +184,79 @@ li{
     font-weight: bold;
 
 }
+.comment-btn{
+    margin-top: 5px;
+}
+.page-title{
+    text-align: center;
+}
+
+.question-info{
+    text-align: center;
+}
+
+.comment-group-title{
+    margin-top: 20px;
+}
+
+.form-container{
+    width: 500px;
+    margin-top: 10px;
+    text-align: right;
+}
+
+.comment-group{
+    list-style: none;
+    padding-left: 0;
+}
+
+.comment-group li{
+    border-bottom:1px solid #eee;
+    padding: 10px 0;
+}
+
+.comment-group li .user-info{
+    height: 40px;
+    line-height:40px;
+    color: #9b9b9b;
+    font-size: 16px;
+}
+
+/* mine information*/
+
+.user-info .avatar{
+    height:40px;
+    width: 40px;
+    float: left;
+    border-radius: 50%;
+}
+
+.user-info .username{
+    margin-left: 10px;
+}
+.user-info .create-time{
+    float: right;
+}
+.comment-content{
+    margin-left: 50px;
+}
+.delete_a{
+    float:right;
+}
+
+/* login */
+.form-group label{
+    color: #eeeeee;
+}
+.login-form{
+    width: 300px;
+	height: 350px;
+	margin: auto;
+	position: absolute;
+	top: 10%;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
 

@@ -78,7 +78,7 @@ def delete_q(id):
         db.session.query(UserFavoriteQuestionModel).filter(UserFavoriteQuestionModel.question_id == q_id).delete()
         db.session.query(QuestionModel).filter(QuestionModel.id == q_id).delete()
         db.session.commit()
-        info = "user id" + str(user_id) + " delete question id" + q_id
+        info = "user id" + str(user_id) + " delete question id" + str(q_id)
         logger1.log(msg=info, level=20)
     except Exception as e:
         info = "user id" + str(user_id) + " fail to delete question id" + str(q_id) + "with expection" + e

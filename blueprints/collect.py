@@ -78,16 +78,35 @@ def add_1(): # add assessment
     print(maps)
     return redirect("/mine/mine/see_my_collection")
 
-@bp.route("/collect/", methods=["POST","GET"])
+@bp.route("/collect/<path:path>", methods=["POST","GET"])
 @login_required
-def collect(): # add collect item
+def collect(path): # add collect item
     user_id = S.get("user_id")
-    data = json.loads(request.form.get('data'))
-    f_id = data['f_id']
-    q_id = data['q_id']
+    q_id = int(path[:path.index("*")])
+    f_id = int(path[path.index("*")+1:])
     favorite = FavoriteModel.query.filter(FavoriteModel.id == f_id).first()
     question = QuestionModel.query.filter(QuestionModel.id == q_id).first()
     if request.method == 'POST':
+        if question not in favorite.qs:
+            favorite.qs.append(question)
+            f_org = favorite.num_content + 1
+            db.session.query(FavoriteModel).filter(FavoriteModel.id == f_id).update({'num_content': f_org})
+            db.session.commit()
+            user_favorite_model = UserFavoriteQuestionModel(question_id=q_id, favorite_id=f_id, user_id=user_id)
+            db.session.add(user_favorite_model)
+            db.session.query(UserFavoriteQuestionModel).filter(UserFavoriteQuestionModel.question_id == q_id,
+                                                               UserFavoriteQuestionModel.favorite_id == f_id,
+                                                               UserFavoriteQuestionModel.user_id == None).delete()
+            print("post")
+            db.session.commit()
+        else:
+            favorite.qs.remove(question)
+            f_org = favorite.num_content - 1
+            db.session.query(FavoriteModel).filter(FavoriteModel.id == f_id).update({'num_content': max(f_org,0)})
+            db.session.query(UserFavoriteQuestionModel).filter(UserFavoriteQuestionModel.question_id==q_id, UserFavoriteQuestionModel.favorite_id==f_id,UserFavoriteQuestionModel.user_id==user_id).delete()
+            db.session.commit()
+        return redirect("/")
+    else:
         if question not in favorite.qs:
             favorite.qs.append(question)
             f_org = favorite.num_content + 1
@@ -105,7 +124,5 @@ def collect(): # add collect item
             db.session.query(FavoriteModel).filter(FavoriteModel.id == f_id).update({'num_content': max(f_org,0)})
             db.session.query(UserFavoriteQuestionModel).filter(UserFavoriteQuestionModel.question_id==q_id, UserFavoriteQuestionModel.favorite_id==f_id,UserFavoriteQuestionModel.user_id==user_id).delete()
             db.session.commit()
-        return("nothing")
-    else:
-        return ("nothing")
+        return redirect("/")
 

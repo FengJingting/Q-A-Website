@@ -34,3 +34,4 @@
 2022-12-13 16:33:46 - operation log - INFO -mine:  user id3 successfully change username in ip127.0.0.1
 2022-12-13 16:34:50 - operation log - INFO -collect:  user id3 add favoritelinux
 2022-12-13 16:35:28 - operation log - INFO -collect:  user id3 add favoritewoye
+2022-12-14 11:17:26 - operation log - INFO -user:  some one login without register 
