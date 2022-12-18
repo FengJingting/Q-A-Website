@@ -5976,7 +5976,3 @@
 2022-12-17 21:05:20,380 - werkzeug - INFO - 127.0.0.1 - - [17/Dec/2022 21:05:20] "[36mGET /static/js/noise.min.js HTTP/1.1[0m" 304 -
 2022-12-17 21:05:20,382 - werkzeug - INFO - 127.0.0.1 - - [17/Dec/2022 21:05:20] "[36mGET /static/js/swirl.js HTTP/1.1[0m" 304 -
 2022-12-17 21:05:20,384 - werkzeug - INFO - 127.0.0.1 - - [17/Dec/2022 21:05:20] "[36mGET /static/js/util.js HTTP/1.1[0m" 304 -
-2022-12-17 22:55:10,196 - werkzeug - INFO -  * Detected change in 'D:\\social-media\\test\\test_flaskr.py', reloading
-2022-12-17 22:55:10,834 - werkzeug - INFO -  * Restarting with stat
-2022-12-17 22:55:12,843 - werkzeug - WARNING -  * Debugger is active!
-2022-12-17 22:55:12,855 - werkzeug - INFO -  * Debugger PIN: 112-042-912
