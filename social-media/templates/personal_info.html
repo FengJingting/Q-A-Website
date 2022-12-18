@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Mine{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
+  <script src="{{ url_for('static',filename='js/change_email.js') }}"></script>
+{% endblock %}
+
+
+{% block body %}
+    <!-- personal info -->
+    <div class="row row1" >
+        <div class="col"></div>
+            <div class="col-8">
+                <ul class=" nav nav-tabs mb-4 pb-2" id="ex1" role="tablist">
+                    <li class="nav-item nav-mid shade" role="presentation">
+                        <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab" href="{{ url_for('mine.see_my_info') }}" role="tab" aria-controls="ex1-tabs-1" aria-selected="true">
+                            Personal Info
+                        </a>
+                    </li>
+                    <li class="nav-item nav-mid shade" role="presentation">
+                        <a class="nav-link" id="ex1-tab-1" data-mdb-toggle="tab" href="{{ url_for('mine.see_my_collection') }}" role="tab" aria-controls="ex1-tabs-1" aria-selected="true">
+                            My favorite
+                        </a>
+                    </li>
+                    <li class="nav-item nav-mid shade" role="presentation">
+                        <a class="nav-link " id="ex1-tab-1" data-mdb-toggle="tab" href="{{ url_for('mine.see_my_question') }}" role="tab" aria-controls="ex1-tabs-1" aria-selected="true">
+                            My question
+                        </a>
+                    </li>
+                </ul>
+                <div class="container ">
+
+                         <img class="avatar" src="{{ avatars.robohash(info.id) }}">
+
+                    <!--personal info-->
+                    <ul class="person-info">
+                        <li>
+                             <div class="card">
+                                <div class="card-body">
+                                    <span class="title">User Name:</span> &nbsp; &nbsp;{{ info.username }}
+                                    <button  class="info-btn" data-bs-toggle="modal" data-bs-target="#exampleModal1">edit</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                             <div class="card">
+                                <div class="card-body">
+                                    <span class="title">User Email:</span> &nbsp;&nbsp; {{ info.email }}
+                                    <button class="info-btn" data-bs-toggle="modal" data-bs-target="#exampleModal2">edit</button>
+                                </div>
+
+                            </div>
+                        </li>
+                        <li>
+                             <div class="card">
+                                <div class="card-body">
+                                    <span class="title">Password:</span>&nbsp;&nbsp; ******
+                                    <button class="info-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">edit</button>
+                                </div>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+                <!-- change username -->
+                <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <!-- Modal Header-->
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Change Username</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                       <!-- Modal Body-->
+                      <div class="modal-body">
+                           <form class="d-flex justify-content-center align-items-center mb-4" method="post" action="{{ url_for('mine.change_username') }}">
+                                  <div class="form-outline flex-fill">
+                                      <div class="input-group mb-3">
+                                          <input type="text" id="form2" class="shade form-control" placeholder="new_username" name="new_username"/>
+                                          <button  id="user-btn" type="submit" class="btn btn-info ms-2">Confirm</button>
+                                      </div>
+                                  </div>
+
+                            </form>
+                      </div>
+                      <!-- Modal Footer-->
+                      <div class="modal-footer">
+                        <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- change email -->
+                <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <!-- Modal Header-->
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Change Email</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                       <!-- Modal Body-->
+                      <div class="modal-body">
+                           <form class="d-flex justify-content-center align-items-center mb-4" method="post" action="{{ url_for('mine.change_email') }}">
+                                  <div class="form-outline flex-fill">
+                                      <div class="input-group mb-3">
+                                          <input type="email" id="form2" id="exampleInputEmail1" class="shade form-control" aria-describedby="emailHelp" placeholder="new_email" name="new_email"/>
+                                      </div>
+                                      <div class="input-group mb-3">
+                                           <input type="text" placeholder="captcha" class="form-control" name="captcha">
+                                          <button class="btn btn-outline-secondary" type="button" id="captcha-btn">Get</button>
+                                      </div>
+                                      <button type="submit" class="btn btn-info ms-2">Confirm</button>
+                                  </div>
+                            </form>
+                      </div>
+                      <!-- Modal Footer-->
+                      <div class="modal-footer">
+                        <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- change password -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <!-- Modal Header-->
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Change Password</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                       <!-- Modal Body-->
+                      <div class="modal-body">
+                           <form class="d-flex justify-content-center align-items-center mb-4" method="post" action="{{ url_for('mine.change_password') }}">
+                                  <div class="form-outline flex-fill">
+                                      <div class="input-group mb-3">
+                                          <input type="text" id="form2" class="shade form-control" placeholder="old_password" name="old_password"/>
+                                      </div>
+                                      <div class="input-group mb-3">
+                                          <input type="text" id="form2" class="shade form-control" placeholder="new_password" name="new_password"/>
+                                          <button type="submit" class="btn btn-info ms-2">Confirm</button>
+                                      </div>
+                                  </div>
+
+                            </form>
+
+                      </div>
+                      <!-- Modal Footer-->
+                      <div class="modal-footer">
+                        <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+            </div>
+        <div class="col"></div>
+    </div>
+
+{% endblock %}

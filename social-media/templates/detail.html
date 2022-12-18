@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}{{ question.title }}{% endblock %}
+
+
+{% block head %}
+{% endblock %}
+
+
+{% block body %}
+  <div class="row row1">
+    <div class="col"></div>
+    <div class="col-8" style="background-color: #fff;padding: 20px;">
+      <h3 class="page-title">{{ question.title }}</h3>
+      <p class="question-info">
+        <span>Author：{{ question.author.username }}</span>
+        <span>Time：{{ question.create_time }}</span>
+      </p>
+      <hr>
+      <p class=" show">{{ question.content }}</p>
+      <hr>
+
+      <h4 class="comment-group-title">Answers（{{ question.answers|length }}）：</h4>
+      <form action="{{ url_for('qa.answer',question_id=question.id) }}" method="post">
+        <div class="form-group">
+          <input type="text" placeholder="Add comment" name="content" class="form-control">
+        </div>
+        {% for message in get_flashed_messages() %}
+          <div class="form-group">
+            <div class="text-danger">{{ message }}</div>
+          </div>
+        {% endfor %}
+        <div class="form-group" style="text-align: right;">
+          <button class="comment-btn btn-primary">Comment</button>
+        </div>
+      </form>
+      <ul class="comment-group">
+        {% for answer in question.answers %}
+          <li>
+            <div class="user-info">
+              <img class="side-question-avatar" src="{{ avatars.robohash(answer.author_id) }}">
+              <span class="username">{{ answer.author.username }}</span>
+              <span class="create-time">{{ answer.create_time }}</span>
+
+            </div>
+            <div>
+                 <p class="comment-content">{{ answer.content }}
+                     {% if user == answer.author_id %}
+                        <a href="{{ url_for('qa.delete_a',id=answer.id) }}">
+                           <i class="bi bi-trash3-fill delete_fav" ></i>
+                        </a>
+
+                    {% endif %}
+                 </p>
+
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="col"></div>
+  </div>
+{% endblock %}

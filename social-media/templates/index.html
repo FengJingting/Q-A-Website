@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Index{% endblock %}
+<script src="{{ url_for('static',filename='jquery/jquery.3.6.min.js') }}"></script>
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+  <div class="row row1" >
+    <div class="col"></div>
+    <div class="col-8">
+      <ul class="question-ul">
+{#      <div> <code>Welcome to the Q&A</code><em>Welcome to the Q&A</em> </div>#}
+        {% for question in questions %}
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal_{{ question.id }}" tabindex="-1" aria-labelledby="exampleModalLabel_{{ question.id }}" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <!-- Modal Header-->
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">My Favorite{{ question.id }}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+               <!-- Modal Body-->
+              <div class="modal-body">
+                    <!-- add favorite -->
+                    <form class="d-flex justify-content-center align-items-center mb-4" id="form_{{ question.id }}" method="post" action="{{ url_for('collect.add') }}">
+                                  <div class="form-outline flex-fill">
+                                      <div class="input-group mb-3">
+                                          <input type="text" id="form2" class="shade form-control" placeholder="favorite_name" name="favorite_name"/>
+                                      </div>
+                                  </div>
+                                  <button type="submit" class="btn btn-info ms-2">Adds</button>
+                    </form>
+                    <!-- show favorite -->
+                    <ul>
+                       {% for fav in favorite %}
+                        <li>
+                                <div class="card-body">{{ fav.name }}
+                                    <a class="collect_item" id="b_{{ question.id }}_{{ fav.id }}" href="{{ url_for('collect.collect',path=question.id~"*"~fav.id) }}">
+                                        collect
+                                    </a>
+{#                                    <button type="button" class="collect_item" id="b_{{ question.id }}_{{ fav.id }}">collect</button>#}
+                                </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+              </div>
+              <!-- Modal Footer-->
+              <div class="modal-footer">
+                <button type="button" id="{{ question.id }}_close" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+          <li>
+            <!--avatar-->
+            <div class="side-question">
+              <img class="side-question-avatar" src="{{ avatars.robohash(question.author_id) }}" alt="./img/avatar.jpg" title="avatar">
+            </div>
+            <!--question body-->
+            <div class="question-main">
+              <div class="question-title"><a href="{{ url_for('qa.question_detail',question_id=question.id) }}">{{ question.title }}</a></div>
+              <div class="question-content">{{ question.content }}</div>
+
+              <div  class="question-detail">
+                  <div class="detail-info">
+                      <button type="button" class="btn btn-default" id="btn_collect"  data-bs-toggle="modal" data-bs-target="#exampleModal_{{ question.id }}">
+                        <i class="bi bi-star" id="btn_collect_icon_{{ question.id }}"></i> collect
+                      </button>
+                      <span class="question-author">{{ question.author.username }}</span>
+                      <span class="question-time">{{ question.create_time }}</span>
+                  </div>
+
+                  <div class="geo">
+                    <i class="bi bi-geo-alt"></i>
+                    <span class="question-geo">{{ question.city }}</span>
+                    <span class="question-geo">{{ question.geolocation }}</span>
+                  </div>
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="col"></div>
+  </div>
+
+    <script type="text/javascript">
+
+    {% for question in questions %}
+        {% for fav in favorite %}
+            var str = "{{fav.qs}}";
+            var patt1 = new RegExp("{{ question }}");
+            var collect_it = document.getElementById("b_{{ question.id }}_{{ fav.id }}")
+            if( patt1.test(str)){
+                $("#b_{{ question.id }}_{{ fav.id }}").css("background-color","yellow");
+                collect_it.innerHTML = "isCollect";
+            }else{
+                collect_it.innerHTML = "Collect";
+                $("#b_{{ question.id }}_{{ fav.id }}").css("background-color","white");
+            }
+
+            // the collect button inside the modal
+            $("#b_{{ question.id }}_{{ fav.id }}").click(function() {
+                var collect_it = document.getElementById("b_{{ question.id }}_{{ fav.id }}")
+                if (collect_it.innerHTML == "isCollect") {
+                    collect_it.innerHTML = "Collect";
+                    $("#b_{{ question.id }}_{{ fav.id }}").css("color", "black");
+                } else {
+                    $("#b_{{ question.id }}_{{ fav.id }}").css("color", "yellow");
+                    collect_it.innerHTML = "isCollect";
+                }
+            })
+
+            // click collect button
+            $("#btn_collect").click(function(){
+                var classname = $("#btn_collect_icon").attr("class");
+                $("#btn_collect_icon").removeClass("bi-star-fill bi-star");
+                if(classname == "bi bi-star" ){
+                    $("#btn_collect_icon").addClass("bi bi-star-fill");
+                }else{
+                    $("#btn_collect_icon").addClass("bi bi-star");
+                }
+            });
+        {% endfor %}
+
+        // close modal button
+            $("#{{ question.id }}_close").click(function(){
+                $.get('http://127.0.0.1:5000/', function(res) {
+                    location.reload();
+                    console.log(res);
+                })
+            });
+
+        // collect button
+            var collect = document.getElementById("btn_collect_icon")
+            $("#btn_collect_icon_{{ question.id }}").removeClass("bi-star-fill bi-star");
+            var str = "{{fav_q}}";
+            var patt1 = new RegExp("{{ question }}");
+            if(patt1.test(str)){
+                $("#btn_collect_icon_{{ question.id }}").addClass("bi bi-star-fill");
+            }else{
+                $("#btn_collect_icon_{{ question.id }}").addClass("bi bi-star");
+            }
+    {% endfor %}
+
+
+
+    </script>
+{% endblock %}

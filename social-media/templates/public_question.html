@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Public{% endblock %}
+
+{% block body %}
+<div class="row row1" >
+<div class="col"></div>
+<div class="col-8">
+  <h1 class="public-title">Public Question</h1>
+  <form action="{{ url_for('qa.public_question') }}" method="post">
+    <div class="form-group">
+      <input type="text" name="title" class="form-control" placeholder="Enter Title">
+    </div>
+    <div class="form-group public-content">
+      <textarea name="content" class="form-control" rows="10" placeholder="Enter Content"></textarea>
+    </div>
+    <div class="form-group getgeo">
+        <div class="input-group mb-3">
+            <input type="text" id="form1" class="shade form-control" placeholder="city location" name="city"/>
+            <button id="get_city" type="button">get city</button>
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" id="form2" class="shade form-control" placeholder="geolocation" name="geolocation"/>
+            <button id="get_geo" type="button">get geolocation</button>
+        </div>
+    </div>
+
+    {% for message in get_flashed_messages() %}
+      <div class="form-group">
+        <div class="text-danger">{{ message }}</div>
+      </div>
+    {% endfor %}
+
+    <div class="form-group" style="text-align: right;">
+      <button id="get_geo" class="btn btn-primary" type="submit">Public</button>
+    </div>
+  </form>
+
+</div>
+<div class="col"></div>
+</div>
+    <script src="http://api.map.baidu.com/api?v=2.0&ak=pjlrsQkd7x8lLGyMoNejORVf4tU1Ez9N"></script>
+    <script>
+    var city = "";
+    var province = "";
+    var latitude = "";
+    var longitude = "";
+
+    // get city and province name
+     $("#get_city").click(function() {
+         var form1 = document.getElementById("form1");
+         if(localStorage.getItem ("city") ){
+             form1.value = localStorage.getItem ("city");
+             console.log("in local storage");
+         }else{
+             var geolocation = new BMap.Geolocation();
+             geolocation.getCurrentPosition(function (r) {
+             if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+                 var province = r.address.province //get province
+                 var city = r.address.city //get city
+                 form1.value = province+city;
+                 localStorage.setItem ("city",province+city);
+                 $('.cityName').text(city)
+                }
+            })
+        }
+     })
+
+     // get geo
+     $("#get_geo").click(function () {
+         var form2 = document.getElementById("form2");
+
+         if(localStorage.getItem ("geo") ){
+             form2.value = localStorage.getItem ("geo");
+             console.log("in local storage");
+         }else{
+             var geolocation = new BMap.Geolocation();
+             geolocation.getCurrentPosition(function (r) {
+             if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+                 if (navigator.geolocation) {
+                 navigator.geolocation.getCurrentPosition((function (position) {
+                     latitude = position.coords.latitude;
+                     longitude = position.coords.longitude;
+                     value = latitude.toString().slice(0, 5)+"°,"+longitude.toString().slice(0, 5)+"°";
+                     form2.value = value;
+                     localStorage.setItem ("geo",value);
+                 }))
+                 } else {
+                     alert("The browser doesn't allow to get geo-location!");
+                 }
+             }
+            })
+        }
+     });
+
+    </script>
+{% endblock %}

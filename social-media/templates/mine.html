@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Mine{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+
+{% block body %}
+    <!--favorite question-->
+    <div class="row row1" >
+        <div class="col"></div>
+            <div class="col-8">
+
+                <ul class=" nav nav-tabs mb-4 pb-2" id="ex1" role="tablist">
+                    <li class="nav-item nav-mid shade" role="presentation">
+                        <a class="nav-link " id="ex1-tab-1" data-mdb-toggle="tab" href="{{ url_for('mine.see_my_info') }}" role="tab" aria-controls="ex1-tabs-1" aria-selected="true">
+                            Personal Info
+                        </a>
+                    </li>
+                    <li class="nav-item nav-mid shade" role="presentation">
+                        <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab" href="{{ url_for('mine.see_my_collection') }}" role="tab" aria-controls="ex1-tabs-1" aria-selected="true">
+                            My favorite
+                        </a>
+                    </li>
+                    <li class="nav-item nav-mid shade" role="presentation">
+                        <a class="nav-link " id="ex1-tab-1" data-mdb-toggle="tab" href="{{ url_for('mine.see_my_question') }}" role="tab" aria-controls="ex1-tabs-1" aria-selected="true">
+                            My question
+                        </a>
+                    </li>
+                </ul>
+                <form class="d-flex justify-content-center align-items-center mb-4" method="post" action="{{ url_for('collect.add_1') }}">
+                                  <div class="form-outline flex-fill">
+                                      <div class="input-group mb-3">
+                                          <input type="text" id="form2" class="shade form-control" placeholder="favorite_name" name="favorite_name"/>
+                                          <button type="submit" class="btn btn-info ms-2">Adds</button>
+
+                                      </div>
+                                  </div>
+
+                </form>
+                {% for fav in favorite %}
+                <div class="card">
+                    <div class="card-body">
+                        <a class="fav_title" href="{{ url_for('mine.see_my_collection_item',id=fav.id) }}">{{ fav.name }}</a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <a class="delete-q"  href="{{ url_for('mine.delete_f',id=fav.id) }}">
+                            <i class="bi bi-trash3-fill delete_fav" >delete</i>
+                        </a>
+                        <span class="fav-content">{{ fav.num_content }} content</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        <div class="col"></div>
+    </div>
+<script>
+{#    {% for fav in favorite %}#}
+{#        $("#btn_delete_icon_{{ fav.id }}").click(function(){#}
+{#                //require parameter#}
+{#                var data = {#}
+{#                    data: JSON.stringify({#}
+{#                        f_id:{{ fav.id }},#}
+{#                    }),#}
+{#                }#}
+{#                console.log(data)#}
+{#                $.ajax({#}
+{#                    //request way#}
+{#                    type : "POST",#}
+{#                    dataType: "json",#}
+{#                    //request address#}
+{#                    url : "http://127.0.0.1:5000/mine/mine/delete_f",#}
+{#                    //data#}
+{#                    data : data,#}
+{#                    //if success#}
+{#                    success : function(result) {#}
+{#                        console.log("success");#}
+{#                    },#}
+{#                    //if fail#}
+{#                    error : function(e){#}
+                        {#console.log("f");#}
+{#                        console.log(e.status);#}
+                        {#console.log(e.responseText);#}
+{#                    }#}
+{#                });#}
+{#            });#}
+{#    {% endfor %}#}
+</script>
+{% endblock %}
